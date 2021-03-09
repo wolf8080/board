@@ -10,6 +10,7 @@ public class BoardApplication {
 		SpringApplication.run(BoardApplication.class, args);
 		System.out.println("Hello World");
 		System.out.println("Time is 1:05 PM");
+		System.out.println("뜨거운 밤");
 	}
 
 }
