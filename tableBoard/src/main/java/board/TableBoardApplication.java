@@ -4,11 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BoardApplication {
+public class TableBoardApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BoardApplication.class, args);
-		System.out.println("START");
+		SpringApplication.run(TableBoardApplication.class, args);
 	}
 
 }
