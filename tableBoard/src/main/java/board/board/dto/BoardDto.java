@@ -1,6 +1,7 @@
 package board.board.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class BoardDto {
 	
@@ -13,6 +14,15 @@ public class BoardDto {
 	private LocalDateTime createdDatetime;
 	private String updatedId;
 	private LocalDateTime updatedDatetime;
+	
+	private List<BoardFileDto> fileList;
+	
+	public List<BoardFileDto> getFileList() {
+		return fileList;
+	}
+	public void setFileList(List<BoardFileDto> fileList) {
+		this.fileList = fileList;
+	}
 	public int getBoardIdx() {
 		return boardIdx;
 	}
@@ -65,8 +75,9 @@ public class BoardDto {
 	public String toString() {
 		return "BoardDto [boardIdx=" + boardIdx + ", title=" + title + ", contents=" + contents + ", hitCnt=" + hitCnt
 				+ ", createdId=" + createdId + ", createdDatetime=" + createdDatetime + ", updatedId=" + updatedId
-				+ ", updatedDatetime=" + updatedDatetime + "]";
+				+ ", updatedDatetime=" + updatedDatetime + ", fileList=" + fileList + "]";
 	}
+	
 	
 	
 }

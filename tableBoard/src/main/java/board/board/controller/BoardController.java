@@ -1,16 +1,24 @@
 package board.board.controller;
 
+import java.io.File;
+import java.net.URLEncoder;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import board.board.dto.BoardDto;
+import board.board.dto.BoardFileDto;
 import board.board.service.BoardServiceImpl;
 
 @Controller
@@ -55,8 +63,8 @@ public class BoardController {
 		 * @throws Exception
 		 */
 	@RequestMapping("/board/insertBoard.do")
-	public String insertBoard(BoardDto board) throws Exception{
-		boardService.insertBoard(board);
+	public String insertBoard(BoardDto board, MultipartHttpServletRequest multiPartHttpServletRequest) throws Exception{
+		boardService.insertBoard(board, multiPartHttpServletRequest);
 		return "redirect:/board/openBoardList.do";
 	}
 	
@@ -71,8 +79,37 @@ public class BoardController {
 			ModelAndView mv = new ModelAndView("/board/boardDetail");
 			BoardDto board = boardService.selectBoardDetail(boardIdx);
 			mv.addObject("board", board);
+			
 			return mv;
 	}
+	
+	/**
+	 * 파일 정보 조회
+	 * @param 
+	 * @return 
+	 * @throws Exception
+	 */
+	@RequestMapping("/board/downloadBoardFile.do")
+	public void selectFileInfomation(HttpServletResponse response, @RequestParam int boardIdx, @RequestParam int idx) throws Exception{
+		BoardFileDto boardFile = boardService.selectFileInfomation(idx, boardIdx);
+		if(ObjectUtils.isEmpty(boardFile) == false) {
+			String fileName = boardFile.getOriginalFileName();
+			byte[] files = FileUtils.readFileToByteArray(new File(boardFile.getStoredFilePath()));
+			
+			response.setContentType("application/octet-stream");
+			response.setContentLength(files.length);
+			response.setHeader("Content-Disposition", "attachment; fileName=\"" + 
+			URLEncoder.encode(fileName, "UTF-8") + "\";");
+			response.setHeader("Content-Transfer-Encoding", "binary");
+			
+			response.getOutputStream().write(files);
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		}
+		
+		
+	}
+	
 		/**
 		 * 게시판 글 수정
 		 * @param 
