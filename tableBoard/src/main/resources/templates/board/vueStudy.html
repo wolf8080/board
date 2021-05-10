@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="assets/css/app.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+    <title>Vue.js 애완용품샵</title>
+</head>
+<body>
+<script src="https://unpkg.com/vue"></script>
+
+<div id="app">
+    <header>
+        <h1>Welcome to {{ siteName }}</h1>
+    </header>
+</div>
+
+<script type="text/javascript">
+    var APP_LOG_LIFECYCLE_EVENTS = true;
+    var webStore = new Vue({
+        el: "#app",
+        data: {
+            siteName: "Vue.js 애완용품샵"
+        },
+        beforeCreate: function( ) {
+            if (APP_LOG_LIFECYCLE_EVENTS) {
+                console.log("beforeCreate");
+            }
+        },
+        created: function () {
+            if (APP_LOG_LIFECYCLE_EVENTS) {
+                console.log("created");
+            }
+        },
+        beforeMount: function () {
+            if (APP_LOG_LIFECYCLE_EVENTS) {
+                console.log("beforeMount");
+            }
+        },
+        mounted: function () {
+            if (APP_LOG_LIFECYCLE_EVENTS) {
+                console.log("mounted");
+            }
+        },
+        beforeUpdate: function () {
+            if (APP_LOG_LIFECYCLE_EVENTS) {
+                console.log("beforeUpdate");
+            }
+        },
+        updated: function () {
+            if (APP_LOG_LIFECYCLE_EVENTS) {
+                console.log("updated");
+            }
+        },
+        beforeDestroy: function (){
+            if (APP_LOG_LIFECYCLE_EVENTS) {
+                console.log("beforeDestroy");
+            }
+        },
+        destroyed: function () {
+            if (APP_LOG_LIFECYCLE_EVENTS) {
+            console.log("destroyed");
+        }
+        }
+
+    });
+</script>
+</body>
+</html>
