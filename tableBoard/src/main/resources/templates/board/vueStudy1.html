@@ -40,7 +40,19 @@
           {{ product.price | formatPrice}}
         </p>
         <button class="btn btn-primary btn-lg" v-on:click="addToCart" v-if="canAddToCart">장바구니 담기</button>
-        <button disabled="true" class="btn btn-primary btn-lg" v-else>장바구니 담기</button>
+          <button disabled="true" class="btn btn-primary btn-lg" v-else>장바구니 담기</button>
+          <span class="inventory-message" v-if="product.availableInventory - cartItemCount === 0">
+            <strong>품절!</strong>
+          </span>
+          <span class="inventory-message" v-else-if="product.availableInventory - cartItemCount < 5">
+            {{ product.availableInventory - cartItemCount }} 개 남았습니다!
+          </span>
+          <span class="inventory-message" v-else>
+            <strong>지금 구매하세요!</strong>
+          </span>
+          <div class="rating">
+            <span v-bind:class="{'rating-active' : checkRating(n)}" v-for="n in 5">☆</span>
+          </div>
       </div>
       </div>
       <div v-else>
@@ -52,12 +64,12 @@
               <div class="form-group">
                 <div class="col-md-6">
                   <strong>이름: </strong>
-                  <input v-model="order.firstName" class="form-control" />
+                  <input v-model.lazy="order.firstName" class="form-control" />
                 </div>
               </div>
               <div class="col-md-6">
                 <strong>성: </strong>
-                <input v-model="order.lastName" class="form-control"/>
+                <input v-model.trim="order.lastName" class="form-control"/>
               </div>
               <div class="form-group">
                 <div class="col-md-12 verify">
@@ -71,26 +83,29 @@
                 <!-- 주소입력 -->
                 <div class="col-md-12"><strong>주소:</strong></div>
                 <div class="col-md-12">
-                  <input v-model="order.address" class="form-control"/>
+                  <input v-model.trim="order.address" class="form-control"/>
                 </div>
               </div>
               <div class="from-group">
                 <!-- 도시입력 -->
                 <div class="col-md-12"><strong>도시:</strong></div>
                 <div class="col-md-12">
-                  <input v-model="order.city" class="form-control"/>
+                  <input v-model.trim="order.city" class="form-control"/>
                 </div>
               </div>
               <!-- 도시입력 -->
               <div class="form-group">
                 <div class="col-md-2">
-                  <strong>주:</strong>
+                  <strong>State:</strong>
                   <select v-model="order.state" class="form-control">
-                    <option disabled value="">주</option>
-                    <option v-bind:value="states.AL">AL</option>
+                    <option disabled value="">State</option>
+                    <option v-for="(state, key) in states" v-bind:value="state">
+                      {{key}}
+                    </option>
+                    <!--<option v-bind:value="states.AL">AL</option>
                     <option v-bind:value="states.AR">AR</option>
                     <option v-bind:value="states.CA">CA</option>
-                    <option v-bind:value="states.NV">NV</option>
+                    <option v-bind:value="states.NV">NV</option> -->
                   </select>
                 </div>
               </div>
@@ -98,7 +113,8 @@
               <div class="form-group">
                 <div class="col-md-6 col-md-offset-4">
                   <strong>우편번호: </strong>
-                  <input v-model="order.zip" class="form-control">
+                  <input v-model.number="order.zip" class="form-control"
+                  type="number">
                 </div>
               </div>
               <!-- 체크박스 추가 -->
@@ -183,7 +199,8 @@
                       " 유기농 25파운드 사료입니다.",
               price: 2000,
               image: "assets/images/product-fullsize.png",
-              availableInventory: 5 // 장바구니 상품갯수 제한 속성
+              availableInventory: 10, // 장바구니 상품갯수 제한 속성
+              rating:3 // 별점 속성 추가
             },
             cart: []
           } ,
@@ -221,6 +238,9 @@
       },
       submitForm() {
         alert('제출 완료');
+      },
+      checkRating(n) {
+        return this.product.rating - n >=0;
       }
     }
   });
