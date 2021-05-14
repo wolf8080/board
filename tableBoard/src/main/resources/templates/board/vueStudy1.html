@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="assets/css/app.css"/>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- axios 추가 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.js"></script>
   <title>Vue.js 애완용품샵</title>
 </head>
 <body>
@@ -11,6 +14,8 @@
 
 <div id="app">
   <header>
+    <!-- 컴퍼넌트 추가 -->
+    <my-component text="안녕하세요"></my-component>
     <div class="navbar navbar-default">
       <h1>{{ siteName }}</h1>
     </div>
@@ -24,125 +29,131 @@
     </div>
   </header>
   <main>
-    <div class="row product">
-      <div>
-      <div v-if="showProduct">
-        <!-- 상품설명 페이지 -->
-        <div class="col-md-2 col-md-offset-1">
-        <figure>
-        <img v-bind:src="product.image">
-      </figure>
-        </div>
-        <div class="col-md-6 col-md-offset-2 description">
-        <h1 v-text="product.title"></h1>
-        <p v-html="product.description"></p>
-        <p class="price">
-          {{ product.price | formatPrice}}
-        </p>
-        <button class="btn btn-primary btn-lg" v-on:click="addToCart" v-if="canAddToCart">장바구니 담기</button>
-          <button disabled="true" class="btn btn-primary btn-lg" v-else>장바구니 담기</button>
-          <span class="inventory-message" v-if="product.availableInventory - cartItemCount === 0">
+
+
+        <div v-if="showProduct">
+          <div v-for="product in sortedProducts">
+            <hr>
+          <div class="row">
+          <!-- 상품설명 페이지 -->
+            <div class="col-md-5 col-md-offset-0">
+            <figure>
+              <img v-bind:src="product.image">
+            </figure>
+          </div>
+          <div class="col-md-6 col-md-offset-2 description">
+            <h1 v-text="product.title"></h1>
+            <p v-html="product.description"></p>
+            <p class="price">
+              {{ product.price | formatPrice}}
+            </p>
+            <button class="btn btn-primary btn-lg" v-on:click="addToCart(product)" v-if="canAddToCart(product)">장바구니 담기</button>
+            <button disabled="true" class="btn btn-primary btn-lg" v-else>장바구니 담기</button>
+            <span class="inventory-message" v-if="product.availableInventory - cartCount(product.id) === 0">
             <strong>품절!</strong>
           </span>
-          <span class="inventory-message" v-else-if="product.availableInventory - cartItemCount < 5">
-            {{ product.availableInventory - cartItemCount }} 개 남았습니다!
+            <span class="inventory-message" v-else-if="product.availableInventory - cartCount(product.id) < 5">
+            {{ product.availableInventory - cartCount(product.id) }} 개 남았습니다!
           </span>
-          <span class="inventory-message" v-else>
+            <span class="inventory-message" v-else>
             <strong>지금 구매하세요!</strong>
           </span>
-          <div class="rating">
-            <span v-bind:class="{'rating-active' : checkRating(n)}" v-for="n in 5">☆</span>
+            <div class="rating">
+              <span v-bind:class="{'rating-active' : checkRating(n, product)}" v-for="n in 5">☆</span>
+            </div>
+            </div>
           </div>
-      </div>
-      </div>
-      <div v-else>
-        <!-- 체크아웃 페이지 -->
-        <div class="col-md-10 col-md-offset-1">
-          <div class="panel panel-info">
-            <div class="panel-heading">애완용품샵 체크아웃</div>
-            <div class="panel-body">
-              <div class="form-group">
-                <div class="col-md-6">
-                  <strong>이름: </strong>
-                  <input v-model.lazy="order.firstName" class="form-control" />
+            </hr>
+          </div>
+        </div>
+        <div v-else>
+          <!-- 체크아웃 페이지 -->
+          <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-info">
+              <div class="panel-heading">애완용품샵 체크아웃</div>
+              <div class="panel-body">
+                <div class="form-group">
+                  <div class="col-md-6">
+                    <strong>이름: </strong>
+                    <input v-model.lazy="order.firstName" class="form-control" />
+                  </div>
                 </div>
-              </div>
-              <div class="col-md-6">
-                <strong>성: </strong>
-                <input v-model.trim="order.lastName" class="form-control"/>
-              </div>
-              <div class="form-group">
-                <div class="col-md-12 verify">
+                <div class="col-md-6">
+                  <strong>성: </strong>
+                  <input v-model.trim="order.lastName" class="form-control"/>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-12 verify">
           <pre>
             이름: {{ order.firstName }}
             성: {{ order.lastName }}
           </pre>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <!-- 주소입력 -->
-                <div class="col-md-12"><strong>주소:</strong></div>
-                <div class="col-md-12">
-                  <input v-model.trim="order.address" class="form-control"/>
+                <div class="form-group">
+                  <!-- 주소입력 -->
+                  <div class="col-md-12"><strong>주소:</strong></div>
+                  <div class="col-md-12">
+                    <input v-model.trim="order.address" class="form-control"/>
+                  </div>
                 </div>
-              </div>
-              <div class="from-group">
+                <div class="from-group">
+                  <!-- 도시입력 -->
+                  <div class="col-md-12"><strong>도시:</strong></div>
+                  <div class="col-md-12">
+                    <input v-model.trim="order.city" class="form-control"/>
+                  </div>
+                </div>
                 <!-- 도시입력 -->
-                <div class="col-md-12"><strong>도시:</strong></div>
-                <div class="col-md-12">
-                  <input v-model.trim="order.city" class="form-control"/>
+                <div class="form-group">
+                  <div class="col-md-2">
+                    <strong>State:</strong>
+                    <select v-model="order.state" class="form-control">
+                      <option disabled value="">State</option>
+                      <option v-for="(state, key) in states" v-bind:value="state">
+                        {{key}}
+                      </option>
+                      <!--<option v-bind:value="states.AL">AL</option>
+                      <option v-bind:value="states.AR">AR</option>
+                      <option v-bind:value="states.CA">CA</option>
+                      <option v-bind:value="states.NV">NV</option> -->
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <!-- 도시입력 -->
-              <div class="form-group">
-                <div class="col-md-2">
-                  <strong>State:</strong>
-                  <select v-model="order.state" class="form-control">
-                    <option disabled value="">State</option>
-                    <option v-for="(state, key) in states" v-bind:value="state">
-                      {{key}}
-                    </option>
-                    <!--<option v-bind:value="states.AL">AL</option>
-                    <option v-bind:value="states.AR">AR</option>
-                    <option v-bind:value="states.CA">CA</option>
-                    <option v-bind:value="states.NV">NV</option> -->
-                  </select>
+                <!-- 우편번호 입력 -->
+                <div class="form-group">
+                  <div class="col-md-6 col-md-offset-4">
+                    <strong>우편번호: </strong>
+                    <input v-model.number="order.zip" class="form-control"
+                           type="number">
+                  </div>
                 </div>
-              </div>
-              <!-- 우편번호 입력 -->
-              <div class="form-group">
-                <div class="col-md-6 col-md-offset-4">
-                  <strong>우편번호: </strong>
-                  <input v-model.number="order.zip" class="form-control"
-                  type="number">
+                <!-- 체크박스 추가 -->
+                <!-- 선물체크박스에 참, 거짓 바인딩 -->
+                <div class="form-group">
+                  <div class="col-md-6 boxes">
+                    <input type="checkbox" id="gift" value="true" v-bind:true-value="order.sendGift"
+                           v-bind:false-value="order.dontSendGift" v-model="order.gift">
+                    <label for="gift">선물로 보내기?</label>
+                  </div>
                 </div>
-              </div>
-              <!-- 체크박스 추가 -->
-              <!-- 선물체크박스에 참, 거짓 바인딩 -->
-              <div class="form-group">
-                <div class="col-md-6 boxes">
-                  <input type="checkbox" id="gift" value="true" v-bind:true-value="order.sendGift"
-                         v-bind:false-value="order.dontSendGift" v-model="order.gift">
-                  <label for="gift">선물로 보내기?</label>
+                <!-- 라디오 버튼 추가 -->
+                <div class="form-group">
+                  <div class="col-md-6 boxes">
+                    <input type="radio" id="home" value="Home" v-bind:value="order.home" v-model="order.method">
+                    <label for="home">자택</label>
+                    <input type="radio" id="business" value="Business" v-bind:value="order.business" v-model="order.method">
+                    <label for="business">직장</label>
+                  </div>
                 </div>
-              </div>
-              <!-- 라디오 버튼 추가 -->
-              <div class="form-group">
-                <div class="col-md-6 boxes">
-                  <input type="radio" id="home" value="Home" v-bind:value="order.home" v-model="order.method">
-                  <label for="home">자택</label>
-                  <input type="radio" id="business" value="Business" v-bind:value="order.business" v-model="order.method">
-                  <label for="business">직장</label>
+                <!-- 주문하기버튼 -->
+                <div class="form-group">
+                  <div class="col-md-6">
+                    <button type="submit" class="btn btn-primary submit" v-on:click="submitForm">주문하기</button>
+                  </div>
                 </div>
-              </div>
-              <!-- 주문하기버튼 -->
-              <div class="form-group">
-                <div class="col-md-6">
-                  <button type="submit" class="btn btn-primary submit" v-on:click="submitForm">주문하기</button>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-md-12 verify">
+                <div class="form-group">
+                  <div class="col-md-12 verify">
           <pre>
             이름: {{ order.firstName }}
             성: {{ order.lastName }}
@@ -153,21 +164,28 @@
             주소지: {{ order.method }}
             선물: {{ order.gift }}
           </pre>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        </div>
-      </div>
-    </div>
-   </main>
+
+
+  </main>
 </div>
 
 <script type="text/javascript">
+  // 컴포넌트 선언을 포함한 const 변수
+  const Component = {
+    // 해당 컴포넌트를 표시할 템플릿
+    template: '<div> {{ text }}! 애완용품 샵에 오신 것을 환영합니다!</div>',
+    props: ['text']
+  }
   var APP_LOG_LIFECYCLE_EVENTS = true;
   var webStore = new Vue({
             el: "#app",
+            components: {'myComponent' : Component}, // 컴포넌트 인스턴스 옵션
             data: {
               showProduct: true, // 상품페이지 보여줄 지 체크하는 속성
               siteName: "Vue.js 애완용품샵",
@@ -192,16 +210,7 @@
                 CA: '캘리포니아',
                 NV: '네바다'
               },
-            product: {
-              id: 1001,
-              title: "고양이 사료, 25파운드",
-              description: "당신의 고양이를 위한 <em>거부할 수 없는</em>," +
-                      " 유기농 25파운드 사료입니다.",
-              price: 2000,
-              image: "assets/images/product-fullsize.png",
-              availableInventory: 10, // 장바구니 상품갯수 제한 속성
-              rating:3 // 별점 속성 추가
-            },
+            product: [],
             cart: []
           } ,
     filters: {
@@ -221,28 +230,62 @@
         }
       }
     },
+
     computed: {
+      // 현재 장바구니에 담긴 상품 개수 (product.json 불러오기 전)
       cartItemCount: function() {
         return this.cart.length || '';
       },
-      canAddToCart: function() {
-        return this.product.availableInventory > this.cartItemCount;
+      sortedProducts() {
+        if(this.product.length > 0) {
+          let productsArray = this.product.slice(0);
+          function compare(a,b) {
+            if (a.title.toLowerCase() < b.title.toLowerCase()) return 1;
+            return 0; // 상품명이 같을 경우
+          }
+          return productsArray.sort(compare);
+        }
       }
     },
     methods: {
-      addToCart: function() {
-        this.cart.push(this.product.id);
+      // 장바구니 추가
+      addToCart: function(aProduct) {
+        this.cart.push(aProduct.id);
       },
+      //체크아웃 페이지, 상품페이지 전환
       showCheckout() {
         this.showProduct = this.showProduct ? false : true;
       },
+
       submitForm() {
         alert('제출 완료');
       },
-      checkRating(n) {
-        return this.product.rating - n >=0;
+
+      checkRating(n, myproduct){
+        return myproduct.rating - n >=0;
+      },
+      // 장바구니 담기 활성화
+      canAddToCart: function(aProduct) {
+        return aProduct.availableInventory > this.cartCount(aProduct.id);
+      },
+      // 현재 장바구니 상품 개수 (product.json 불러온 후후)
+      cartCount(id) {
+       let count = 0;
+        for (var i=0; i<this.cart.length; i++) {
+          if(this.cart[i] === id) {
+            count ++;
+          }
+        }
+        return count;
       }
-    }
+    },
+    created: function() {
+      axios.get('./product.json')
+              .then((response) => {
+                this.product=response.data.product;
+                console.log(this.product);
+              });
+    },
   });
 </script>
 
