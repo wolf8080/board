@@ -7,11 +7,17 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import board.interceptor.LoggerInceptor;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 //LoggerInterceptor를 스프링 빈으로 등록
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer{
-	
+	@Bean
+	MappingJackson2JsonView jsonView(){
+		return new MappingJackson2JsonView();
+	}
+
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new LoggerInceptor()); //인터셉터 등록
