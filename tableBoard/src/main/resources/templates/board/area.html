@@ -11,24 +11,30 @@
 <script src="https://unpkg.com/vue"></script>
 
 <div id="app">
-    <ol>
-        <li v-for="nation in states">
-            {{nation}}
-        </li>
-    </ol>
+    <my-component></my-component>
+    <my-component></my-component>
+    <my-component></my-component>
 </div>
+
 <script type="text/javascript">
-  var webstore = new Vue({
+  const Component = {
+      template: '<div><button type="button" v-on:click="counter +=1">{{ counter }}</button></div>',
+      data() {
+          return {
+              counter: 0
+          }
+      }
+
+  };
+
+  new Vue({
     el: '#app',
-    data: {
-      states: [
-          '알라바마',
-          '알래스카',
-          '애리조나',
-          '캘리포니아',
-          '네바다'
-      ]
-    }
+    components: {'myComponent' : Component},
+      data() {
+        return {
+            message: ""
+        }
+      }
   });
 </script>
 </body>
