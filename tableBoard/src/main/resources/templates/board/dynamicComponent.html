@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <script src="https://unpkg.com/vue"></script>
+    <title>동적 속성 연습</title>
+</head>
+<body>
+<div id="app">
+  <my-component></my-component>
+  <my-component></my-component>
+  <my-component></my-component>
+</div>
+
+<div id="map" background: url()>
+
+</div>
+
+<script>
+  const Count = { Count: 0 };
+  const MyComponent = {
+    template: '<div><button v-on:click="Count += 1"> {{Count}} </button></div>',
+    data() {
+      return { Count:0 }
+    }
+  };
+
+  new Vue({
+    el: "#app",
+    components: {'my-component' : MyComponent},
+    data() {
+      return {
+        message: ''
+      }
+    }
+  });
+</script>
+</body>
+</html>

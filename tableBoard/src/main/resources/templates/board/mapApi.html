@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <title>간단한 지도 표시하기</title>
+</head>
+<body>
+<script src="https://unpkg.com/vue"></script>
+
+
+
+  <div id="localConstruction" v-show="isShowInfo" v-cloak>
+    <div id="map" style="margin:0 auto; width:1000px;max-width:100%;height:700px;"></div>
+  </div>
+
+<section>
+  <article>
+    <a href="/board/mapWrite">입력하기</a>
+  </article>
+  <article>
+    <div class="input-area">
+      <form name="form" id="form" method="post" onsubmit="return false;">
+        <select name="region_code1" size="1" onchange="getSearch();">
+          <option value="0">지역선택</option>
+          <option value="">서울특별시</option>
+          <option value="">부산광역시</option>
+          <option value="">대구광역시</option>
+          <option value="">인천광역시</option>
+          <option value="">광주광역시</option>
+          <option value="">대전광역시</option>
+          <option value="">울산광역시</option>
+          <option value="">강원도</option>
+          <option value="">경기도</option>
+          <option value="">경상북도</option>
+          <option value="">경상남도</option>
+          <option value="">전라남도</option>
+          <option value="">전라북도</option>
+          <option value="">충청남도</option>
+          <option value="">충청북도</option>
+          <option value="">세종특별자치시</option>
+          <option value="">제주특별자치도</option>
+        </select>
+        <input type="hidden" name="resultType" value="json"/>
+        <input type="hidden" name="confmKey" value="devU01TX0FVVEgyMDIxMDUyODE0Mzc1MjExMTIxODY="/>
+        <div class="search-box">
+          <input id="searchInput" type="text" name="keyword" value="" placeholder="아파트/건물명" autocomplete="off"/>
+          <table id="searchList" style="display:none;"></table>
+        </div>
+      </form>
+    </div>
+  </article>
+  <article>
+  </article>
+</section>
+<footer>
+</footer>
+
+<style>
+  .input-area{
+    display: inline-block;
+  }
+  .search-box{
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+  }
+  #searchInput{
+    display: flex;
+  }
+  #searchInput tr{
+    width:100%;
+    margin:0 auto;
+  }
+  #searchList{
+    position: fixed;
+    border: 1px solid black;
+    display: block;
+}
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.js"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=mn7cwsrvym"></script>
+<script src="/js/marker.js"></script>
+<script src="/js/map.js"></script>
+<script src="/js/searchArea.js"></script>
+<script>
+</script>
+</body>
+</html>

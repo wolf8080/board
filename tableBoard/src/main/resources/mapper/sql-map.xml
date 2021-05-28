@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board.board.mapper.MapMapper">
+
+    <select id="selectPosition" resultType="board.board.dto.MapDto">
+        SELECT
+        <if test="type != null and type != ''">
+            count (*) as interior_count,
+                <choose>
+                    <when test="type == 1">
+                        interior_gu,
+                        avg(CAST (lat AS DOUBLE PRECISION)) as lat,
+                        avg(CAST (lng AS DOUBLE PRECISION)) as lng
+                    </when>
+                    <when test="type == 2">
+                        interior_dong,
+                        avg(CAST (lat AS DOUBLE PRECISION)) as lat,
+                        avg(CAST (lng AS DOUBLE PRECISION)) as lng
+                    </when>
+                    <otherwise>
+                        lat,
+                        lng,
+                        company_nm
+                    </otherwise>
+                </choose>
+            FROM
+                ini_table
+                <choose>
+                    <when test="type == 1">
+                        GROUP BY interior_gu
+                    </when>
+                    <when test="type == 2">
+                        GROUP BY interior_dong
+                    </when>
+                    <otherwise>
+                        GROUP BY lat, lng, company_nm
+                    </otherwise>
+                </choose>
+            </if>
+    </select>
+
+    <insert id="insertLocation" parameterType="board.board.dto.MapDto">
+        INSERT
+            INTO ini_table
+        (
+         address,
+         lat,
+         lng,
+         interior_gu,
+         interior_dong,
+         interior_nm,
+         company_nm
+        )
+            VALUES
+        (
+         #{address},
+         #{lat},
+         #{lng},
+         #{interiorGu},
+         #{interiorDong},
+         #{interiorNm},
+         #{companyNm}
+        )
+    </insert>
+
+</mapper>

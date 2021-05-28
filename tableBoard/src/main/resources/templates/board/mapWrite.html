@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>BOARD</title>
+</head>
+<body>
+<div class="container">
+  <h2>위치 등록</h2>
+  <form id="frm" name="frm" method="post" action="/board/writeMap" >
+    <table class="board_detail">
+      <tr>
+        <td>위도</td>
+        <td><input type="text" id="lat" name="lat"></td>
+      </tr>
+      <tr>
+        <td>경도</td>
+        <td><input type="text" id="lng" name="lng"></td>
+      </tr>
+      <tr>
+        <td>주소</td>
+        <td><input type="text" id="address" name="address"></td>
+      </tr>
+      <tr>
+        <td>구이름</td>
+        <td><input type="text" id="interiorGu" name="interiorGu"></td>
+      </tr>
+      <tr>
+        <td>동이름</td>
+        <td><input type="text" id="interiorDong" name="interiorDong"></td>
+      </tr>
+      <tr>
+        <td>시공건수</td>
+        <td><input type="text" id="interiorNm" name="interiorNm"></td>
+      </tr>
+      <tr>
+        <td>회사이름</td>
+        <td><input type="text" id="companyNm" name="companyNm"></td>
+      </tr>
+    </table>
+    <input type="submit" id="submit" value="저장" class="btn">
+  </form>
+</div>
+</body>
+</html>
