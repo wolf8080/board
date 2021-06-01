@@ -23,31 +23,38 @@
   <article>
     <div class="input-area">
       <form name="form" id="form" method="post" onsubmit="return false;">
-        <select name="region_code1" size="1" onchange="getSearch();">
-          <option value="0">지역선택</option>
-          <option value="">서울특별시</option>
-          <option value="">부산광역시</option>
-          <option value="">대구광역시</option>
-          <option value="">인천광역시</option>
-          <option value="">광주광역시</option>
-          <option value="">대전광역시</option>
-          <option value="">울산광역시</option>
-          <option value="">강원도</option>
-          <option value="">경기도</option>
-          <option value="">경상북도</option>
-          <option value="">경상남도</option>
-          <option value="">전라남도</option>
-          <option value="">전라북도</option>
-          <option value="">충청남도</option>
-          <option value="">충청북도</option>
-          <option value="">세종특별자치시</option>
-          <option value="">제주특별자치도</option>
+        <select id="region_code1" name="admCd" size="1">
+          <option value="">지역선택</option>
+          <option value="11">서울특별시</option>
+          <option value="26">부산광역시</option>
+          <option value="27">대구광역시</option>
+          <option value="28">인천광역시</option>
+          <option value="29">광주광역시</option>
+          <option value="30">대전광역시</option>
+          <option value="31">울산광역시</option>
+          <option value="42">강원도</option>
+          <option value="41">경기도</option>
+          <option value="47">경상북도</option>
+          <option value="48">경상남도</option>
+          <option value="46">전라남도</option>
+          <option value="45">전라북도</option>
+          <option value="44">충청남도</option>
+          <option value="43">충청북도</option>
+          <option value="3611">세종특별자치시</option>
+          <option value="50">제주특별자치도</option>
         </select>
         <input type="hidden" name="resultType" value="json"/>
         <input type="hidden" name="confmKey" value="devU01TX0FVVEgyMDIxMDUyODE0Mzc1MjExMTIxODY="/>
+        <input type="hidden" name="hstryYn" value="Y"/>
+        <input type="hidden" name="firstSort" value="road">
+        <input type="hidden" name="addInfoYn" value="Y"/>
         <div class="search-box">
           <input id="searchInput" type="text" name="keyword" value="" placeholder="아파트/건물명" autocomplete="off"/>
           <table id="searchList" style="display:none;"></table>
+        </div>
+        <input type="button" value="찾기" onclick="javascript:jusoCallBack();">
+        <div>
+        <button onclick="javascript:regionData()">눌러보세요</button>
         </div>
       </form>
     </div>
@@ -83,7 +90,8 @@
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.js"></script>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=mn7cwsrvym"></script>
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=7o83deuk7v"></script>
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps-geocoder.js?ncpClientId=7o83deuk7v"></script>
 <script src="/js/marker.js"></script>
 <script src="/js/map.js"></script>
 <script src="/js/searchArea.js"></script>
